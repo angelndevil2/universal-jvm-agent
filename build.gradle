@@ -1,0 +1,103 @@
+ext {
+    majorVersion = '0'
+    minorVersion = '0'
+    fixVersion = '1'
+}
+
+group 'com.github.angelndevil2'
+version majorVersion+'.'+minorVersion+'.'+fixVersion
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+/**
+ * dynamic agent loading supported >= 1.6
+ */
+sourceCompatibility = 1.6
+mainClassName ='com.github.angelndevil2.universaljvmagent.Launcher'
+
+repositories {
+    mavenCentral()
+}
+
+startScripts {
+    classpath = files("*")
+}
+
+configurations {
+    /**
+     * exclude from runtime, tar, zip
+     */
+    runtime.exclude('module':'lombok')
+}
+
+distZip {
+    /**
+     * exclude from zip
+     */
+    exclude 'tools.jar'
+}
+
+distTar {
+    /**
+     * exclude from tar
+     */
+    exclude 'tools.jar'
+}
+
+def jdkHome = System.getenv("JAVA_HOME")
+
+dependencies {
+    /**
+     * for commoan line option handling
+     */
+    compile 'commons-cli:commons-cli:1.3.1'
+    /**
+     * for logger - logback
+     */
+    compile 'ch.qos.logback:logback-classic:1.1.3'
+    /**
+     * for shell command handling
+     */
+    compile group:'org.apache.commons', name: 'commons-exec', version: '1.3'
+    compile files("$jdkHome/lib/tools.jar")
+    compile 'org.projectlombok:lombok:1.16.6'
+    compile 'com.google.guava:guava:19.0'
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+jar {
+    manifest {
+
+        attributes('Implementation-Title':'com.github.angelndevil2'+"."+module.name,
+                'Implementation-Version': version,
+                'Created-By': 'angelndevil2',
+                'Premain-Class': 'com.github.angelndevil2.universaljvmagent.Agent',
+                'Agent-Class': 'com.github.angelndevil2.universaljvmagent.Agent',
+                'Main-Class': 'com.github.angelndevil2.universaljvmagent.Launcher',
+                'Boot-Class-Path':'commons-cli-1.3.1.jar logback-classic-1.1.3.jar logback-core-1.1.3.jar' +
+                                ' slf4j-api-1.7.7.jar' +
+                                ' universal-jvm-agent-0.0.1-SNAPSHOT.jar'+
+                                ' guava-19.0.jar'
+        )
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from tasks.javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+// apply from: 'maven-push.gradle'
