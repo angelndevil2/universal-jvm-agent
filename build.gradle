@@ -1,7 +1,7 @@
 ext {
     majorVersion = '0'
     minorVersion = '0'
-    fixVersion = '2'
+    fixVersion = '3-SNAPSHOT'
 }
 
 group 'com.github.angelndevil2'
