@@ -21,6 +21,7 @@ public class CmdOptions {
 
         options.addOption("h", "help", false, "print this message");
         options.addOption("c", "client", false, "run in client mode");
+        options.addOption("s", "server", false, "run in server mode");
         options.addOption(
                 Option.builder("p").
                         argName("pid").

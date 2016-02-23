@@ -1,6 +1,7 @@
 package com.github.angelndevil2.universaljvmagent;
 
 import com.github.angelndevil2.universaljvmagent.client.CommandHandler;
+import com.github.angelndevil2.universaljvmagent.jetty.JettyServer;
 import com.github.angelndevil2.universaljvmagent.util.PropertiesUtil;
 import com.sun.tools.attach.AgentInitializationException;
 import com.sun.tools.attach.AgentLoadException;
@@ -191,6 +192,10 @@ public class Launcher {
             vm.loadAgent(jarName);
             log.debug(jarName+" registered.");
             vm.detach();
+
+        } else if (cmd.hasOption('s')) {
+            new JettyServer().run();
+
         } else {
             System.out.println("c or p options is required");
             options.printUsage();

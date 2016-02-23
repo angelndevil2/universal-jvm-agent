@@ -70,10 +70,45 @@ public class CommandHandler {
         return factory.getDomains(serverId);
     }
 
+    /**
+     *
+     * @param serverId mbean server id
+     * @param name object name
+     * @return MBeanInfo
+     * @throws RemoteException
+     */
     public MBeanInfo getMBeanInfo(String serverId, ObjectName name) throws RemoteException {
         IMBeanServerFactory factory = (IMBeanServerFactory)rmiObjectHashMap.get(RmiObjectNames.MBEAN_FACTORY);
         return factory.getMBeanInfo(serverId, name);
     }
+
+    /**
+     *
+     * @return initial jndi context traversing result
+     * @throws RemoteException
+     */
+    @SuppressWarnings("unchecked")
+    public ArrayListMultimap getJndiContext() throws RemoteException {
+        IJndiContextTraverser traverser = (IJndiContextTraverser)rmiObjectHashMap.get(RmiObjectNames.CONTEXT_TRAVERSER);
+        traverser.setSecurityValues(PropertiesUtil.getJndiUserId(), PropertiesUtil.getJndiUserPassword());
+        traverser.setContext();
+        return traverser.traverse();
+    }
+
+    /**
+     *
+     * @param name root name
+     * @return initial jndi context traversing result, root from name
+     * @throws RemoteException
+     */
+    @SuppressWarnings("unchecked")
+    public ArrayListMultimap getJndiContext(String name) throws RemoteException {
+        IJndiContextTraverser traverser = (IJndiContextTraverser)rmiObjectHashMap.get(RmiObjectNames.CONTEXT_TRAVERSER);
+        traverser.setSecurityValues(PropertiesUtil.getJndiUserId(), PropertiesUtil.getJndiUserPassword());
+        traverser.setContext();
+        return traverser.traverse(name);
+    }
+
 
     public void printAllMBeanServerIds() throws RemoteException {
         for (String id : getAllMBeanServerId()) {

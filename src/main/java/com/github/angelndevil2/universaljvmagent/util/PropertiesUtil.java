@@ -31,6 +31,15 @@ public class PropertiesUtil {
     private static String confDir;
     @Setter @Getter
     private static String binDir;
+    /**
+     * @since 0.0.3
+     */
+    @Setter @Getter
+    private static String webBaseDir;
+    /**
+     *  * @since 0.0.3
+     */
+    public static final String JettyProperties = "jetty.properties";
     @Getter
     private static final Properties properties = new Properties();
 
@@ -52,6 +61,12 @@ public class PropertiesUtil {
     }
 
     /**
+     * @since 0.0.3
+     * @return
+     */
+    public static String getJettyPropertiesFile() { return confDir+File.separator+JettyProperties; }
+
+    /**
      * set application's proper directory from base directory
      *
      * @throws IOException
@@ -60,6 +75,7 @@ public class PropertiesUtil {
         if (baseDir == null) baseDir = ".";
         confDir = baseDir+File.separator+"conf";
         binDir = baseDir+File.separator+"bin";
+        webBaseDir = baseDir+File.separator+"static_web";
 
         loadProperties();
         setHomeDir(baseDir);
