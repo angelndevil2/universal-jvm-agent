@@ -46,6 +46,9 @@ public class MBeanServerFactory implements IMBeanServerFactory {
         return factory.getDomains(serverId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MBeanInfo getMBeanInfo(String serverId, ObjectName name) throws RemoteException {
         return factory.getMBeanInfo(serverId, name);
