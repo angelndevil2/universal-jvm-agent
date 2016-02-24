@@ -33,16 +33,16 @@ configurations {
 
 distZip {
     /**
-     * exclude from zip
+     * exclude from zip is not possible for dynamic loading
      */
-    exclude 'tools.jar'
+    //exclude 'tools.jar'
 }
 
 distTar {
     /**
-     * exclude from tar
+     * exclude from tar is not possible for dynamic loading
      */
-    exclude 'tools.jar'
+   // exclude 'tools.jar'
 }
 
 def jdkHome = System.getenv("JAVA_HOME")
