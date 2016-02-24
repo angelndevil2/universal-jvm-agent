@@ -37,5 +37,12 @@ public interface IMBeanServerFactory extends IRmiObject {
      */
     String[] getDomains(String serverId) throws RemoteException;
 
+    /**
+     *
+     * @param serverId mbean server id
+     * @param name object name
+     * @return
+     * @throws RemoteException
+     */
     MBeanInfo getMBeanInfo(String serverId, ObjectName name) throws RemoteException;
 }

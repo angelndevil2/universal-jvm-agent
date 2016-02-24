@@ -64,19 +64,19 @@ def getPomDescription() {
 }
 
 def getPomUrl() {
-    return hasProperty('POM_URL') ? POM_URL : 'https://github.com/angelndevil2/system-info'
+    return hasProperty('POM_URL') ? POM_URL : ''
 }
 
 def getPomScmUrl() {
-    return hasProperty('POM_SCM_URL') ? POM_SCM_URL : 'https://github.com/angelndevil2/system-info'
+    return hasProperty('POM_SCM_URL') ? POM_SCM_URL : ''
 }
 
 def getPomScmConnectionUrl() {
-    return hasProperty('POM_SCM_CONNECTION') ? POM_SCM_CONNECTION : 'scm:git:https://github.com/angelndevil2/system-info.git'
+    return hasProperty('POM_SCM_CONNECTION') ? POM_SCM_CONNECTION : ''
 }
 
 def getPomScmDevConnectionUrl() {
-    return hasProperty('POM_SCM_DEV_CONNECTION') ? POM_SCM_DEV_CONNECTION : 'scm:git:https://github.com/angelndevil2/system-info.git'
+    return hasProperty('POM_SCM_DEV_CONNECTION') ? POM_SCM_DEV_CONNECTION : ''
 }
 
 def getPomLicenseName() {

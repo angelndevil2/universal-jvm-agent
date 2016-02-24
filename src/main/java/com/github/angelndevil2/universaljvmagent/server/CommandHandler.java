@@ -24,7 +24,6 @@ public class CommandHandler implements Runnable {
     @Getter
     private Thread thread;
     private int port;
-    private final VmInfo vmInfo = new VmInfo();
 
     private final HashMap<String,IRmiObject> rmiObjectHashMap = new HashMap<String,IRmiObject>();
 
