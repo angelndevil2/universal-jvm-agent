@@ -23,6 +23,7 @@ import java.rmi.NotBoundException;
 @Slf4j
 public class Launcher {
 
+    private static String vmArgs;
 
     /**
      * If the provided class has been loaded from a jar file that is on the local file system, will find the absolute path to that jar file.
@@ -83,6 +84,8 @@ public class Launcher {
             try {
 
                 PropertiesUtil.setDirs(cmd.getOptionValue("d").trim());
+
+                vmArgs = cmd.getOptionValue("d").trim();
 
             } catch (IOException e) {
 
@@ -189,7 +192,7 @@ public class Launcher {
 
             VirtualMachine vm= VirtualMachine.attach(pid);
             String jarName = findPathJar(null);
-            vm.loadAgent(jarName);
+            vm.loadAgent(jarName, vmArgs);
             log.debug(jarName+" registered.");
             vm.detach();
 
