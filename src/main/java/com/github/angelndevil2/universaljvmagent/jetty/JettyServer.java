@@ -2,15 +2,13 @@ package com.github.angelndevil2.universaljvmagent.jetty;
 
 import com.github.angelndevil2.universaljvmagent.servlet.EntryPoint;
 import com.github.angelndevil2.universaljvmagent.servlet.JndiTraverse;
+import com.github.angelndevil2.universaljvmagent.servlet.MBeanServers;
 import com.github.angelndevil2.universaljvmagent.util.PropertiesUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.DefaultHandler;
-import org.eclipse.jetty.server.handler.GzipHandler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.server.handler.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
@@ -77,14 +75,17 @@ public class JettyServer implements Runnable, Serializable {
                 "jersey.config.server.provider.classnames",
                 (new StringBuilder()).append((EntryPoint.class.getCanonicalName())).
                         append(",").
-                        append(JndiTraverse.class.getCanonicalName()).toString());
+                        append(JndiTraverse.class.getCanonicalName()).
+                        append(",").
+                        append(MBeanServers.class.getCanonicalName()).toString()
+                );
 
         // Add the ResourceHandler to the server.
         GzipHandler gzip = new GzipHandler();
         server.setHandler(gzip);
 
         // make handler chain
-        HandlerList handlers = new HandlerList();
+        HandlerCollection handlers = new HandlerCollection();
         handlers.setHandlers(new Handler[] { resource_handler, servletContext, new DefaultHandler() });
         gzip.setHandler(handlers);
 

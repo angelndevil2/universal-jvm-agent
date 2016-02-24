@@ -10,7 +10,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -39,14 +38,6 @@ public class ServerModeTest {
             log.error("base directory setting error.", e);
         }
 
-        jettyProp = new Properties();
-
-        try {
-            jettyProp.load(new FileInputStream(PropertiesUtil.getJettyPropertiesFile()));
-        } catch (IOException e) {
-            log.error("error loading jetty properties.", e);
-        }
-
     }
 
     @AfterClass
@@ -73,8 +64,34 @@ public class ServerModeTest {
             System.out.println(exchange.getResponseContent());
         }
 
+        /*exchange.reset();
+        exchange.setURL("http://localhost:1080/192.168.100.242/jndi-traverse/all");
+
+        client.send(exchange);
+
+        // Waits until the exchange is terminated
+        exchangeState = exchange.waitForDone();
+
+        if (exchangeState == HttpExchange.STATUS_COMPLETED) {
+            //assertEquals(200, exchange.getResponseStatus());
+            System.out.println(exchange.getResponseContent());
+        }*/
+
         exchange.reset();
-        exchange.setURL("http://localhost:1080/jndi-traverse/all");
+        exchange.setURL("http://localhost:1080/192.168.100.242/mbeanservers/ids");
+
+        client.send(exchange);
+
+        // Waits until the exchange is terminated
+        exchangeState = exchange.waitForDone();
+
+        if (exchangeState == HttpExchange.STATUS_COMPLETED) {
+            assertEquals(200, exchange.getResponseStatus());
+            System.out.println(exchange.getResponseContent());
+        }
+
+        exchange.reset();
+        exchange.setURL("http://localhost:1080/192.168.100.242/mbeanservers/NSTest02_1456339127817/names");
 
         client.send(exchange);
 

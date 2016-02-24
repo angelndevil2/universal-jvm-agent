@@ -17,14 +17,23 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @since 0.0.3
  * @author k, Created on 16. 2. 24.
  */
-@Path("/jndi-traverse")
+@Path("/{host}/jndi-traverse")
 public class JndiTraverse {
+    /**
+     * get context list start from id
+     *
+     * @param id
+     * @return
+     * @throws RemoteException
+     * @throws NotBoundException
+     */
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String listContext(@PathParam("id") String id) throws RemoteException, NotBoundException {
+    public String listContext(@PathParam("host") String host, @PathParam("id") String id) throws RemoteException, NotBoundException {
         checkArgument(id != null);
 
+        System.err.println(host);
         CommandHandler ch = new CommandHandler("192.168.100.242");
         if (id.equals("all")) {
             return ch.getJndiContext().toString();

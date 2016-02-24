@@ -24,8 +24,15 @@ public class CommandHandler {
 
     private final HashMap<String,IRmiObject> rmiObjectHashMap = new HashMap<String,IRmiObject>();
 
-    public CommandHandler(String host) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry(host);
+    /**
+     * @since 0.0.3
+     * @param host
+     * @param port
+     * @throws RemoteException
+     * @throws NotBoundException
+     */
+    public CommandHandler(final String host, int port) throws RemoteException, NotBoundException {
+        Registry registry = LocateRegistry.getRegistry(host, port);
 
         rmiObjectHashMap.put(RmiObjectNames.VM_INFO, new VmInfo ((IVmInfo) registry.lookup(RmiObjectNames.VM_INFO)));
         rmiObjectHashMap.put(RmiObjectNames.MBEAN_FACTORY,
@@ -33,6 +40,10 @@ public class CommandHandler {
 
         rmiObjectHashMap.put(RmiObjectNames.CONTEXT_TRAVERSER,
                 new JndiContextTraverser ((IJndiContextTraverser) registry.lookup(RmiObjectNames.CONTEXT_TRAVERSER)));
+    }
+
+    public CommandHandler(final String host) throws RemoteException, NotBoundException {
+        this(host, PropertiesUtil.getRimServerPort());
     }
 
     public void printVmList() throws RemoteException {
