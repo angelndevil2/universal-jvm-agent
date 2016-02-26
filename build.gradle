@@ -33,16 +33,16 @@ configurations {
 
 distZip {
     /**
-     * exclude from zip is not possible for dynamic loading
+     * exclude from zip and use start up jvm option -Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
      */
-    //exclude 'tools.jar'
+    exclude 'tools.jar'
 }
 
 distTar {
     /**
-     * exclude from tar is not possible for dynamic loading
+     * exclude from tar and use start up jvm option -Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
      */
-   // exclude 'tools.jar'
+    exclude 'tools.jar'
 }
 
 def jdkHome = System.getenv("JAVA_HOME")
