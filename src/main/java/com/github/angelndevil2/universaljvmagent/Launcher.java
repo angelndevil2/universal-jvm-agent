@@ -144,7 +144,7 @@ public class Launcher {
                                 }
                             } else {
                                 System.out.println("\tMBean Names");
-                                ch.printAllMBeanNames(br.readLine());
+                                ch.printAllMBeanNames(s1);
                             }
                             continue;
                         }
@@ -159,7 +159,7 @@ public class Launcher {
                                 }
                             } else {
                                 System.out.println("\tDomains");
-                                ch.printDomains(br.readLine());
+                                ch.printDomains(s1);
                             }
                             continue;
                         }
@@ -177,6 +177,7 @@ public class Launcher {
                         System.out.println("unknown command.");
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         System.exit(0);
                     }
                 }
