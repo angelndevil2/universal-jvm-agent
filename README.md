@@ -14,7 +14,8 @@ use -javaagent:/path/to/universal-jvm-agent/universal-jvm-agent-version.jar
 can be used with HOTSPOT jvm
 
 * check running jvm's ___pid___
-
+* edit /path/to/universal-jvm-agent/bin/launcher
+    * export UNIVERSAL_JVM_AGENT_OPTS=-Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
 * command
 ```
 /path/to/universal-jvm-agent/bin/launcher -p pid
