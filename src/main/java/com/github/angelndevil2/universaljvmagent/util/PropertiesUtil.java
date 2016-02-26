@@ -114,6 +114,14 @@ public class PropertiesUtil {
     }
 
     /**
+     * @since 0.0.3
+     * @return java.rmi.server.hostname from proeprty
+     */
+    public static String getRimServerHostName() {
+        return properties.getProperty("java.rmi.server.hostname");
+    }
+
+    /**
      * @return rmi port from proeprty
      */
     public static int getRimServerPort() {
