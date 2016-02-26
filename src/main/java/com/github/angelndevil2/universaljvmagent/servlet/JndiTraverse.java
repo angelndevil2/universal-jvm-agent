@@ -33,8 +33,7 @@ public class JndiTraverse {
     public String listContext(@PathParam("host") String host, @PathParam("id") String id) throws RemoteException, NotBoundException {
         checkArgument(id != null);
 
-        System.err.println(host);
-        CommandHandler ch = new CommandHandler("192.168.100.242");
+        CommandHandler ch = new CommandHandler(host);
         if (id.equals("all")) {
             return ch.getJndiContext().toString();
         } else {

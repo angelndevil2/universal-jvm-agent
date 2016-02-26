@@ -74,13 +74,22 @@ public class CommandHandler implements Runnable {
         try {
 
             InetAddress localHost=null;
+            String host = PropertiesUtil.getRimServerHostName(); // $NON-NLS-1$
             // Bug 47980 - allow override of local hostname
-            String host = System.getProperty("java.rmi.server.hostname"); // $NON-NLS-1$
             try {
+
                 if( host==null ) {
-                    log.info("System property 'java.rmi.server.hostname' is not defined, using localHost address");
-                    localHost = InetAddress.getLocalHost();
+                    log.info("agent property 'java.rmi.server.hostname' is not defined, using localHost address");
+                    host = System.getProperty("java.rmi.server.hostname"); // $NON-NLS-1$
+                    if (host == null) {
+                        log.info("System property 'java.rmi.server.hostname' is not defined, using localHost address");
+                        localHost = InetAddress.getLocalHost();
+                    } else {
+                        log.info("Resolving by name the value of System property 'java.rmi.server.hostname':"+host);
+                        localHost = InetAddress.getByName(host);
+                    }
                 } else {
+                    System.setProperty("java.rmi.server.hostname", host);
                     log.info("Resolving by name the value of System property 'java.rmi.server.hostname':"+host);
                     localHost = InetAddress.getByName(host);
                 }
