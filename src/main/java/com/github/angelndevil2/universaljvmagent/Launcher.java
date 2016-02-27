@@ -3,10 +3,6 @@ package com.github.angelndevil2.universaljvmagent;
 import com.github.angelndevil2.universaljvmagent.client.CommandHandler;
 import com.github.angelndevil2.universaljvmagent.jetty.JettyServer;
 import com.github.angelndevil2.universaljvmagent.util.PropertiesUtil;
-import com.sun.tools.attach.AgentInitializationException;
-import com.sun.tools.attach.AgentLoadException;
-import com.sun.tools.attach.AttachNotSupportedException;
-import com.sun.tools.attach.VirtualMachine;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
@@ -68,7 +64,7 @@ public class Launcher {
      *
      * @param args command line arguments
      */
-    public static void main(String[] args) throws IOException, AttachNotSupportedException, ParseException, AgentLoadException, AgentInitializationException {
+    public static void main(String[] args) throws IOException, ParseException {
 
         CmdOptions options = new CmdOptions();
 
@@ -191,11 +187,18 @@ public class Launcher {
             String pid = cmd.getOptionValue('p');
             if (pid == null) throw new NullPointerException("pid is null");
 
-            VirtualMachine vm= VirtualMachine.attach(pid);
-            String jarName = findPathJar(null);
-            vm.loadAgent(jarName, vmArgs);
-            log.debug(jarName+" registered.");
-            vm.detach();
+            try {
+                Class vmClass = Class.forName("com.sun.tools.attach.VirtualMachine");
+                Class.forName("java.lang.Object");
+                Object virtualMachine = vmClass.getMethod("attach", String.class).invoke(null, pid);
+                String jarName = findPathJar(null);
+                virtualMachine.getClass().getMethod("loadAgent", String.class, String.class).invoke(virtualMachine, jarName, vmArgs);
+                log.debug(jarName+" registered.");
+                virtualMachine.getClass().getMethod("detach").invoke(virtualMachine);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
 
         } else if (cmd.hasOption('s')) {
             new JettyServer().run();
