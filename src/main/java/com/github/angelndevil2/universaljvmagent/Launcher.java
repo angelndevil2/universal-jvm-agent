@@ -189,7 +189,6 @@ public class Launcher {
 
             try {
                 Class vmClass = Class.forName("com.sun.tools.attach.VirtualMachine");
-                Class.forName("java.lang.Object");
                 Object virtualMachine = vmClass.getMethod("attach", String.class).invoke(null, pid);
                 String jarName = findPathJar(null);
                 virtualMachine.getClass().getMethod("loadAgent", String.class, String.class).invoke(virtualMachine, jarName, vmArgs);
