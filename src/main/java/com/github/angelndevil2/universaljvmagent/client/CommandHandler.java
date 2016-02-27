@@ -6,6 +6,7 @@ import com.google.common.collect.ArrayListMultimap;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.management.MBeanInfo;
+import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.naming.NameClassPair;
 import java.rmi.NotBoundException;
@@ -14,6 +15,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Set;
 
 /**
@@ -118,6 +120,24 @@ public class CommandHandler {
         traverser.setSecurityValues(PropertiesUtil.getJndiUserId(), PropertiesUtil.getJndiUserPassword());
         traverser.setContext();
         return traverser.traverse(name);
+    }
+
+    /**
+     * @since 0.0.3
+     * @param on object name
+     * @return key property list of object name
+     */
+    public static Hashtable<String, String> getMBeanKeyPropList(ObjectName on) {
+        return on.getKeyPropertyList();
+    }
+
+    /**
+     * @since 0.0.3
+     * @param on object name
+     * @return key property list of object name
+     */
+    public static Hashtable<String, String> getMBeanKeyPropList(String on) throws MalformedObjectNameException {
+        return getMBeanKeyPropList(new ObjectName(on));
     }
 
 
