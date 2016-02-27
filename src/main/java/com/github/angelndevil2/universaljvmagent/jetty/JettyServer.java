@@ -3,6 +3,7 @@ package com.github.angelndevil2.universaljvmagent.jetty;
 import com.github.angelndevil2.universaljvmagent.servlet.EntryPoint;
 import com.github.angelndevil2.universaljvmagent.servlet.JndiTraverse;
 import com.github.angelndevil2.universaljvmagent.servlet.MBeanServers;
+import com.github.angelndevil2.universaljvmagent.servlet.ObjectName;
 import com.github.angelndevil2.universaljvmagent.util.PropertiesUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -77,7 +78,9 @@ public class JettyServer implements Runnable, Serializable {
                         append(",").
                         append(JndiTraverse.class.getCanonicalName()).
                         append(",").
-                        append(MBeanServers.class.getCanonicalName()).toString()
+                        append(MBeanServers.class.getCanonicalName()).
+                        append(",").
+                        append(ObjectName.class.getCanonicalName()).toString()
                 );
 
         // Add the ResourceHandler to the server.
