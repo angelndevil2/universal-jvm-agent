@@ -92,7 +92,8 @@ jar {
                                 ' jetty-servlet:8.1.18.v20150929.jar'+
                                 ' jetty-security:8.1.18.v20150929.jar'*/
 
-                'Boot-Class-Path':configurations.runtime.files.collect { "$it.name" }.join(' ').replace("tools.jar ", "").replace("tools.jar","")
+                'Boot-Class-Path':configurations.runtime.files.collect { "$it.name" }.join(' ').replace("tools.jar ", "").replace("tools.jar",""),
+                'Class-Path':configurations.runtime.files.collect { "$it.name" }.join(' ').replace("tools.jar ", "").replace("tools.jar","")
         )
     }
 }
