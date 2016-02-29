@@ -12,7 +12,7 @@ Values can be specified in units of milliseconds, seconds, minutes or hours.
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${universal-jvm-agent.home}/logs//universal-jvm-agent.log</file>
+        <file>${universal-jvm-agent.home}/logs/universal-jvm-agent.log</file>
         <encoder>
             <pattern>%date %-4relative [%thread] %-5level %logger{35} %msg%n</pattern>
         </encoder>

@@ -32,11 +32,6 @@ public class PropertiesUtil {
     @Setter @Getter
     private static String binDir;
     /**
-     * @since 0.0.3
-     */
-    @Setter @Getter
-    private static String webBaseDir;
-    /**
      *  * @since 0.0.3
      */
     public static final String JettyProperties = "jetty.properties";
@@ -75,7 +70,6 @@ public class PropertiesUtil {
         if (baseDir == null) baseDir = ".";
         confDir = baseDir+File.separator+"conf";
         binDir = baseDir+File.separator+"bin";
-        webBaseDir = baseDir+File.separator+"static_web";
 
         loadProperties();
         setHomeDir(baseDir);
@@ -114,13 +108,6 @@ public class PropertiesUtil {
     }
 
     /**
-     * @return rmi port from proeprty
-     */
-    public static int getRimServerPort() {
-        return Integer.valueOf(properties.getProperty("rmi.server.port", "1099"));
-    }
-
-    /**
      *
      * @return id to access jndi context
      */
@@ -134,5 +121,9 @@ public class PropertiesUtil {
      */
     public static String getJndiUserPassword() {
         return properties.getProperty("jndi.user.password");
+    }
+
+    public static boolean isJeus() {
+        return System.getProperty("jeus.home") != null;
     }
 }

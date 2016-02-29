@@ -1,14 +1,11 @@
 package com.github.angelndevil2.universaljvmagent.jetty;
 
-import com.github.angelndevil2.universaljvmagent.servlet.EntryPoint;
-import com.github.angelndevil2.universaljvmagent.servlet.JndiTraverse;
-import com.github.angelndevil2.universaljvmagent.servlet.MBeanServers;
+import com.github.angelndevil2.universaljvmagent.servlet.*;
 import com.github.angelndevil2.universaljvmagent.util.PropertiesUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.*;
+import org.eclipse.jetty.server.handler.GzipHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
@@ -47,24 +44,8 @@ public class JettyServer implements Runnable, Serializable {
         // crate server
         server = new Server(Integer.parseInt(jettyProperties.getProperty("http.port")));
 
-        // Create the ResourceHandler. It is the object that will actually handle the request for a given file. It is
-        // a Jetty Handler object so it is suitable for chaining with other handlers as you will see in other examples.
-        ResourceHandler resource_handler = new ResourceHandler();
-        // Configure the ResourceHandler. Setting the resource base indicates where the files should be served out of.
-        // In this example it is the current directory but it can be configured to anything that the jvm has access to.
-        resource_handler.setDirectoriesListed(true);
-        resource_handler.setWelcomeFiles(new String[]{ "index.html" });
-        resource_handler.setResourceBase(PropertiesUtil.getWebBaseDir());
-
-        log.debug("static web base dir : {}",PropertiesUtil.getWebBaseDir());
-
         ServletContextHandler servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContext.setContextPath("/");
-
-        // TODO copy for later use
-/*        servletContext.addServlet(new ServletHolder(new HelloServlet()),"*//*");
-        servletContext.addServlet(new ServletHolder(new HelloServlet("Buongiorno Mondo")),"/it*//*");
-        servletContext.addServlet(new ServletHolder(new HelloServlet("Bonjour le Monde")),"/fr*//*");*/
 
         ServletHolder jerseyServlet = servletContext.addServlet(
                 org.glassfish.jersey.servlet.ServletContainer.class, "/*");
@@ -77,17 +58,21 @@ public class JettyServer implements Runnable, Serializable {
                         append(",").
                         append(JndiTraverse.class.getCanonicalName()).
                         append(",").
-                        append(MBeanServers.class.getCanonicalName()).toString()
+                        append(MBeanServers.class.getCanonicalName()).
+                        append(",").
+                        append(MBeanDomains.class.getCanonicalName()).
+                        append(",").
+                        append(MBeans.class.getCanonicalName()).
+                        append(",").
+                        append(MBeanInfo.class.getCanonicalName()).
+                        append(",").
+                        append(MBean.class.getCanonicalName()).toString()
                 );
 
         // Add the ResourceHandler to the server.
         GzipHandler gzip = new GzipHandler();
         server.setHandler(gzip);
-
-        // make handler chain
-        HandlerCollection handlers = new HandlerCollection();
-        handlers.setHandlers(new Handler[] { resource_handler, servletContext, new DefaultHandler() });
-        gzip.setHandler(handlers);
+        gzip.setHandler(servletContext);
 
         try {
             server.start();
@@ -95,7 +80,7 @@ public class JettyServer implements Runnable, Serializable {
             log.error("embedded jetty server start error.", e);
         }
 
-        server.dumpStdErr();
+        //server.dumpStdErr();
 
         /*
         try {
