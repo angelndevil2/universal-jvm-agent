@@ -1,9 +1,9 @@
 package com.github.angelndevil2.universaljvmagent.server;
 
-import com.github.angelndevil2.universaljvmagent.rmiobjects.IVmInfo;
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author k, Created on 16. 2. 21.
  */
-public class VmInfo implements IVmInfo {
+public class VmInfo implements Serializable {
 
     private static final long serialVersionUID = 5436127613485375196L;
 
@@ -19,7 +19,6 @@ public class VmInfo implements IVmInfo {
         VM_LIST;
     }
 
-    @Override
     public List<String> getVmList() throws RemoteException {
         try {
             ArrayList<String> list = new ArrayList<String>();

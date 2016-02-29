@@ -1,7 +1,9 @@
 package com.github.angelndevil2.universaljvmagent;
 
-import com.github.angelndevil2.universaljvmagent.server.CommandHandler;
+import com.github.angelndevil2.universaljvmagent.jetty.JettyServer;
+import com.github.angelndevil2.universaljvmagent.server.MBeanServerFactory;
 import com.github.angelndevil2.universaljvmagent.util.PropertiesUtil;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -15,7 +17,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Slf4j
 public class Agent {
 
-    private static CommandHandler ch;
+    private static JettyServer server;
+    @Getter
+    private static final MBeanServerFactory factory = new MBeanServerFactory();
 
     /**
      * used with -javaagent:
@@ -36,35 +40,40 @@ public class Agent {
     }
 
     /**
-     * new CommandHandler after properties set is done. so not in constructor.
+     * new JettyServer after properties set is done. so not in constructor.
      *
-     * {@link CommandHandler} start
+     * {@link JettyServer} start
      */
-    public static void startCommandHandler() {
-        ch = new CommandHandler();
-        ch.start();
-        log.debug("command handler started.");
+    public static void startServer() {
+        server = new JettyServer();
+        server.run();
+        log.debug("embedded server started.");
     }
     /**
-     * {@link CommandHandler} stop
+     * {@link JettyServer} stop
      */
-    public static void stopCommandHandler() {
-        checkArgument(ch != null);
-        ch.getThread().interrupt();
-        log.debug("command handler stopped.");
+    public static void stopServer() throws Exception {
+        checkArgument(server != null);
+        server.stop();
+        log.debug("embedded jetty server stopped.");
     }
 
     private static void handleOptions(final String opt) {
         log.debug("agent options = {}", opt);
         System.err.println("agent options = " +opt);
-        if ("stop".equals(opt)) stopCommandHandler();
-        else {
+        if ("stop".equals(opt)) {
+            try {
+                stopServer();
+            } catch (Exception e) {
+                log.error("embedded jetty server stop error.",e);
+            }
+        } else {
             if (opt != null) try {
                 PropertiesUtil.setDirs(opt);
             } catch (IOException e) {
                 System.err.println(e.toString());
             }
-            startCommandHandler();
+            startServer();
         }
     }
 }

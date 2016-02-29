@@ -1,11 +1,10 @@
 package com.github.angelndevil2.universaljvmagent.server;
 
-import com.github.angelndevil2.universaljvmagent.rmiobjects.IMBeanServerFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.management.*;
 import javax.management.MBeanServer;
-import java.rmi.RemoteException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -14,35 +13,31 @@ import java.util.Set;
  * @author k, Created on 16. 2. 22.
  */
 @Slf4j
-public class MBeanServerFactory implements IMBeanServerFactory {
+public class MBeanServerFactory implements Serializable {
 
     private static final long serialVersionUID = -2881069740095622627L;
-
     private transient final HashMap<String, com.github.angelndevil2.universaljvmagent.server.MBeanServer> servers
             = new HashMap<String, com.github.angelndevil2.universaljvmagent.server.MBeanServer>();
 
     public MBeanServerFactory() {
-        for (MBeanServer ms : findMBeanServer(null)) {
-            servers.put(getMBeanServerId(ms),
-                    new com.github.angelndevil2.universaljvmagent.server.MBeanServer(ms));
-        }
-        if (servers.size() == 0) log.info("no mbean server exist. 'com.sun.management.jmxremote' property will be help.");
+        restoreMBeanServers();
     }
+
     /**
      *
      * @param agentId
      * @return
-     * @throws RemoteException
      */
     public static ArrayList<MBeanServer> findMBeanServer(final String agentId) {
         return javax.management.MBeanServerFactory.findMBeanServer(agentId);
     }
 
     /**
-     * {@inheritDoc}
+     * @see java.lang.management.ManagementFactory
+     * @return mbean server id array
      */
     @SuppressWarnings("unchecked")
-    public ArrayList<String> getAllMBeanServerId() throws RemoteException {
+    public ArrayList<String> getAllMBeanServerId() {
         ArrayList<String> ids = new ArrayList<String>();
         for (MBeanServer ms : findMBeanServer(null)) {
             ids.add(getMBeanServerId(ms));
@@ -52,37 +47,56 @@ public class MBeanServerFactory implements IMBeanServerFactory {
     }
 
     /**
-     * {@inheritDoc}
+     *
+     * @param serverId mbean server id
+     * @param name object name
+     * @param queryExp
+     * @return object name set
+     * @throws InstanceNotFoundException
      */
-    @Override
-    public Set<ObjectName> queryNames(final String serverId, ObjectName name, QueryExp queryExp) throws RemoteException {
-
-        try {
-            return getMBeanServer(serverId).queryNames(name, queryExp);
-        } catch (InstanceNotFoundException e) {
-            throw new RemoteException(e.getMessage(), e);
-        }
+    public Set<ObjectName> queryNames(final String serverId, final ObjectName name, final QueryExp queryExp) throws InstanceNotFoundException {
+        return getMBeanServer(serverId).queryNames(name, queryExp);
     }
 
     /**
-     * {@inheritDoc}
+     *
+     * @param serverId mbean server id
+     * @param name object name
+     * @param queryExp
+     * @return object name set
+     * @throws MalformedObjectNameException
+     * @throws InstanceNotFoundException
      */
-    @Override
-    public String[] getDomains(String serverId) throws RemoteException {
-        try {
-            return getMBeanServer(serverId).getDomains();
-        } catch (InstanceNotFoundException e) {
-            throw new RemoteException(e.getMessage(), e);
-        }
+    public Set<ObjectName> queryNames(final String serverId, final String name, final QueryExp queryExp) throws MalformedObjectNameException, InstanceNotFoundException {
+        return getMBeanServer(serverId).queryNames(new ObjectName(name), queryExp);
+
     }
 
-    @Override
-    public MBeanInfo getMBeanInfo(String serverId, ObjectName name) throws RemoteException {
-        try {
-            return getMBeanServer(serverId).getMBeanInfo(name);
-        } catch (InstanceNotFoundException e) {
-            throw new RemoteException(e.getMessage(), e);
-        }
+    /**
+     * Get all domains from mbean server whose id is serverId
+     * @param serverId mbean server id
+     * @return domain string array
+     * @throws InstanceNotFoundException
+     */
+    public String[] getDomains(final String serverId) throws InstanceNotFoundException {
+        return getMBeanServer(serverId).getDomains();
+    }
+
+    /**
+     *
+     * @param serverId mbean server id
+     * @param name object name
+     * @return
+     * @throws InstanceNotFoundException
+     * @throws IntrospectionException
+     */
+    public MBeanInfo getMBeanInfo(final String serverId, final ObjectName name) throws InstanceNotFoundException, IntrospectionException, ReflectionException {
+        return getMBeanServer(serverId).getMBeanInfo(name);
+    }
+
+    public Object getMBeanAttribute(final String serverId, final ObjectName name, final String attribute) throws InstanceNotFoundException, MBeanException, AttributeNotFoundException, ReflectionException {
+        return getMBeanServer(serverId).getAttribute(name, attribute);
+
     }
 
     /**
@@ -131,7 +145,7 @@ public class MBeanServerFactory implements IMBeanServerFactory {
     }
 
     private com.github.angelndevil2.universaljvmagent.server.MBeanServer
-    getMBeanServer(String serverId) throws InstanceNotFoundException {
+    getMBeanServer(final String serverId) throws InstanceNotFoundException {
         com.github.angelndevil2.universaljvmagent.server.MBeanServer server = servers.get(serverId);
         if (server == null) {
             ArrayList<MBeanServer> list = MBeanServerFactory.findMBeanServer(serverId);
@@ -147,4 +161,13 @@ public class MBeanServerFactory implements IMBeanServerFactory {
         }
         return server;
     }
+
+    public void restoreMBeanServers() {
+        for (MBeanServer ms : findMBeanServer(null)) {
+            servers.put(getMBeanServerId(ms),
+                    new com.github.angelndevil2.universaljvmagent.server.MBeanServer(ms));
+        }
+        if (servers.size() == 0) log.info("no mbean server exist. 'com.sun.management.jmxremote' property will be help.");
+    }
+
 }

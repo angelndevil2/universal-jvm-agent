@@ -20,19 +20,12 @@ public class CmdOptions {
     public CmdOptions() {
 
         options.addOption("h", "help", false, "print this message");
-        options.addOption("c", "client", false, "run in client mode");
-        options.addOption("s", "server", false, "run in server mode");
         options.addOption(
                 Option.builder("p").
                         argName("pid").
                         longOpt("pid").
                         numberOfArgs(1).
                         desc("Running JVM pid which interested in.").build());
-        options.addOption(
-                Option.builder("host").
-                        argName("host").
-                        numberOfArgs(1).
-                        desc("host address to connect.").build());
         options.addOption(
                 Option.builder("d").
                         argName("dir").

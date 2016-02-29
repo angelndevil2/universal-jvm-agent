@@ -1,10 +1,10 @@
 package com.github.angelndevil2.universaljvmagent.server;
 
-import com.github.angelndevil2.universaljvmagent.rmiobjects.IJndiContextTraverser;
 import com.google.common.collect.ArrayListMultimap;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.naming.*;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
 
@@ -14,7 +14,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author k, Created on 16. 2. 22.
  */
 @Slf4j
-public class JndiContextTraverser implements IJndiContextTraverser {
+public class JndiContextTraverser implements Serializable{
 
     private static final long serialVersionUID = -2978408714946789520L;
 
@@ -26,18 +26,7 @@ public class JndiContextTraverser implements IJndiContextTraverser {
     }
 
     public JndiContextTraverser(final Context ctx) {
-        this(ctx, "\t");
-    }
-
-    public JndiContextTraverser(final Context ctx, final String indent) {
         context = ctx;
-        try {
-            setSecurityValues("netstraw", "netfunnel1234");
-            setContext();
-            traverse();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     public static ArrayListMultimap traverse(final Context context, final String name) {
@@ -71,52 +60,41 @@ public class JndiContextTraverser implements IJndiContextTraverser {
     }
 
     /**
-     * {@inheritDoc}
+     * set context with {@link javax.naming.InitialContext}
      */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void setContext() throws RemoteException {
-        try {
-            this.context = new InitialContext(env);
-        } catch (NamingException e) {
-            throw new RemoteException(e.getMessage(), e);
-        }
+    public void setContext() throws NamingException {
+        this.context = new InitialContext(env);
+    }
+
+    public void setContext(Context ctx) {
+        checkArgument(ctx != null, "context argument is null");
+        this.context = ctx;
     }
 
     /**
-     * {@inheritDoc}
+     * start travers from name
+     *
+     * @param name jndi name
+     * @throws RemoteException
      */
-    @Override
-    public void setContext(Context ctx) throws RemoteException {
-        try {
-            checkArgument(ctx != null, "context argument is null");
-        } catch (IllegalArgumentException e) {
-            throw new RemoteException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ArrayListMultimap traverse(String name) throws RemoteException {
+    public ArrayListMultimap traverse(String name) {
         return traverse(context, name);
     }
 
     /**
-     * {@inheritDoc}
+     * start travers from root
+     *
+     * @throws RemoteException
      */
-    @Override
-    public ArrayListMultimap traverse() throws RemoteException {
+    public ArrayListMultimap traverse() {
         return traverse(context, "");
     }
 
     /**
-     * {@inheritDoc}
+     * set Context.SECURITY_PRINCIPAL, Context.SECURITY_CREDENTIALS from remote values
      */
-    @Override
     @SuppressWarnings("unchecked")
-    public void setSecurityValues(final String id, final String password) throws RemoteException {
+    public void setSecurityValues(final String id, final String password) {
         if (id != null) env.put(Context.SECURITY_PRINCIPAL, id);
         if (password != null) env.put(Context.SECURITY_CREDENTIALS, password);
     }
