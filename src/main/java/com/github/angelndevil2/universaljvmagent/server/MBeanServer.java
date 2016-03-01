@@ -41,11 +41,13 @@ public class MBeanServer implements Serializable {
         return getMBeanServer().getDomains();
     }
 
-    public MBeanInfo getMBeanInfo(final ObjectName name) throws IntrospectionException, InstanceNotFoundException, ReflectionException {
+    public MBeanInfo getMBeanInfo(final ObjectName name)
+            throws IntrospectionException, InstanceNotFoundException, ReflectionException {
         return getMBeanServer().getMBeanInfo(name);
     }
 
-    public Object getAttribute(final ObjectName oname, final String name) throws AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException {
+    public Object getAttribute(final ObjectName oname, final String name)
+            throws AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException {
         return getMBeanServer().getAttribute(oname, name);
     }
 

@@ -31,20 +31,6 @@ configurations {
     runtime.exclude('module':'lombok')
 }
 
-distZip {
-    /**
-     * exclude from zip and use start up jvm option -Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
-     */
-    exclude 'tools.jar'
-}
-
-distTar {
-    /**
-     * exclude from tar and use start up jvm option -Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
-     */
-    exclude 'tools.jar'
-}
-
 def jdkHome = System.getenv("JAVA_HOME")
 
 dependencies {
@@ -68,6 +54,12 @@ dependencies {
     compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.6'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
 
+
+    compile 'org.slf4j:jcl-over-slf4j:1.7.16'
+    compile 'org.slf4j:log4j-over-slf4j:1.7.16'
+
+
+
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
@@ -77,24 +69,16 @@ jar {
         attributes('Implementation-Title':'com.github.angelndevil2'+"."+module.name,
                 'Implementation-Version': version,
                 'Created-By': 'angelndevil2',
-                'Premain-Class': 'com.github.angelndevil2.universaljvmagent.Agent',
-                'Agent-Class': 'com.github.angelndevil2.universaljvmagent.Agent',
+                'Premain-Class': 'com.github.angelndevil2.universaljvmagent.Bootstrap',
+                'Agent-Class': 'com.github.angelndevil2.universaljvmagent.Bootstrap',
                 'Main-Class': 'com.github.angelndevil2.universaljvmagent.Launcher',
-/*                'Boot-Class-Path':'commons-cli-1.3.1.jar logback-classic-1.1.3.jar logback-core-1.1.3.jar' +
-                                ' slf4j-api-1.7.7.jar' +
-                                ' universal-jvm-agent-'+version+'.jar'+
-                                ' guava-19.0.jar'*/
-/*                                ' jetty-server:8.1.18.v20150929.jar'+
-                                ' javax.servlet:3.0.0.v201112011016.jar'+
-                                ' jetty-continuation:8.1.18.v20150929.jar'+
-                                ' jetty-http:8.1.18.v20150929.jar'+
-                                ' jetty-io:8.1.18.v20150929.jar'+
-                                ' jetty-servlet:8.1.18.v20150929.jar'+
-                                ' jetty-security:8.1.18.v20150929.jar'*/
-
-                'Boot-Class-Path':configurations.runtime.files.collect { "$it.name" }.join(' ').replace("tools.jar ", "").replace("tools.jar","")
+                //'Boot-Class-Path': 'universal-jvm-agent'+"-"+version+".jar"
+                //'Class-Path': 'universal-jvm-agent'+"-"+version+".jar"
+                //'Boot-Class-Path':configurations.runtime.files.collect { "$it.name" }.join(' ').replace("tools.jar ", "").replace("tools.jar","")
         )
     }
+
+    //exclude "com/github/angelndevil2/universaljvmagent/Bootstrap.class"
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -107,10 +91,55 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 
+/**
+ * use for boot strap jar
+ */
+task bootStrapJar(type:Jar, dependsOn:compileJava) {
+    classifier = "bootstrap"
+    manifest {
+        attributes(
+                'Implementation-Version': version,
+                'Created-By': 'angelndevil2',
+                'Premain-Class': 'com.github.angelndevil2.universaljvmagent.Bootstrap',
+                'Agent-Class': 'com.github.angelndevil2.universaljvmagent.Bootstrap',
+                'Boot-Class-Path': 'universal-jvm-agent'+"-"+version+"-bootstrap.jar",
+                "Assembly-Date": new java.util.Date().toString()
+        )
+    }
+    from (sourceSets.main.output) {
+        include "com/github/angelndevil2/universaljvmagent/Bootstrap.class"
+    }
+}
+
 artifacts {
     archives jar
     archives javadocJar
     archives sourcesJar
 }
 
+distZip {
+    /**
+     * exclude from zip and use start up jvm option -Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
+     */
+    exclude 'tools.jar'
+    //include 'universal-jvm-agent-'+version+"-bootstrap.jar"
+    dependsOn bootStrapJar
+}
+
+distTar {
+    /**
+     * exclude from tar and use start up jvm option -Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
+     */
+    exclude 'tools.jar'
+}
+
+distributions {
+    main {
+        contents {
+            from(bootStrapJar) {
+                into "lib"
+            }
+        }
+    }
+}
 //apply from: 'maven-push.gradle'

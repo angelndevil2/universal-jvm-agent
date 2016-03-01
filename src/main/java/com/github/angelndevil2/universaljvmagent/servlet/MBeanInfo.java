@@ -35,7 +35,8 @@ public class MBeanInfo {
     @Produces(MediaType.APPLICATION_JSON)
     @SuppressWarnings("unchecked")
     public Response getMBeanInfo(@PathParam("id") String id, @PathParam("object-name") String objectName)
-            throws MalformedObjectNameException, IntrospectionException, InstanceNotFoundException, ReflectionException {
+            throws MalformedObjectNameException, IntrospectionException,
+            InstanceNotFoundException, ReflectionException {
 
         checkArgument(id != null);
         checkArgument(objectName != null);
@@ -49,7 +50,8 @@ public class MBeanInfo {
     @SuppressWarnings("unchecked")
     @Path("/attributes")
     public Response getAttributes(@PathParam("id") String id, @PathParam("object-name") String objectName)
-            throws MalformedObjectNameException, IntrospectionException, InstanceNotFoundException, ReflectionException {
+            throws MalformedObjectNameException, IntrospectionException, InstanceNotFoundException,
+            ReflectionException {
 
         checkArgument(id != null);
         checkArgument(objectName != null);

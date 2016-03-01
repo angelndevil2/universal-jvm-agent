@@ -27,7 +27,7 @@ public class Launcher {
      *                               other custom classloading device).
      */
     public static String findPathJar(Class<?> context) throws IllegalStateException {
-        if (context == null) context = Agent.class;
+        if (context == null) context = Bootstrap.class;
         String rawName = context.getName();
         String classFileName;
         /* rawName is something like package.name.ContainingClass$ClassName. We need to turn this into ContainingClass$ClassName.class. */
@@ -80,8 +80,6 @@ public class Launcher {
 
                 PropertiesUtil.setDirs(cmd.getOptionValue("d").trim());
 
-                vmArgs = cmd.getOptionValue("d").trim();
-
             } catch (IOException e) {
 
                 System.err.println(PropertiesUtil.getConfDir() + File.separator + PropertiesUtil.AppProperties + " not found. may use -d option" + e);
@@ -98,7 +96,6 @@ public class Launcher {
                     Class vmClass = Class.forName("com.sun.tools.attach.VirtualMachine");
                     Object virtualMachine = vmClass.getMethod("attach", String.class).invoke(null, pid);
                     String jarName = findPathJar(null);
-                    System.out.println(jarName+" will be loaded with args "+vmArgs);
                     virtualMachine.getClass().getMethod("loadAgent", String.class, String.class).invoke(virtualMachine, jarName, vmArgs);
                     log.debug(jarName + " registered.");
                     virtualMachine.getClass().getMethod("detach").invoke(virtualMachine);
