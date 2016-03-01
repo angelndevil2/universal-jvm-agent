@@ -25,9 +25,6 @@ can be used with HOTSPOT jvm
 
 * file :  ___/path/to/universal-jvm-agent/conf/agent.properties___
 * turn off logback log ___logback.use=false___
-* for jndi traverse 
-    * ___jndi.user.id=___
-    * ___jndi.user.password=___
 
 ## Status
 
