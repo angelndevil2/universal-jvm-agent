@@ -1,9 +1,11 @@
 package com.github.angelndevil2.universaljvmagent.server;
 
+import com.github.angelndevil2.universaljvmagent.util.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.management.*;
 import javax.management.MBeanServer;
+import javax.naming.InitialContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +56,8 @@ public class MBeanServerFactory implements Serializable {
      * @return object name set
      * @throws InstanceNotFoundException
      */
-    public Set<ObjectName> queryNames(final String serverId, final ObjectName name, final QueryExp queryExp) throws InstanceNotFoundException {
+    public Set<ObjectName> queryNames(final String serverId, final ObjectName name, final QueryExp queryExp)
+            throws InstanceNotFoundException {
         return getMBeanServer(serverId).queryNames(name, queryExp);
     }
 
@@ -67,7 +70,8 @@ public class MBeanServerFactory implements Serializable {
      * @throws MalformedObjectNameException
      * @throws InstanceNotFoundException
      */
-    public Set<ObjectName> queryNames(final String serverId, final String name, final QueryExp queryExp) throws MalformedObjectNameException, InstanceNotFoundException {
+    public Set<ObjectName> queryNames(final String serverId, final String name, final QueryExp queryExp)
+            throws MalformedObjectNameException, InstanceNotFoundException {
         return getMBeanServer(serverId).queryNames(new ObjectName(name), queryExp);
 
     }
@@ -90,11 +94,13 @@ public class MBeanServerFactory implements Serializable {
      * @throws InstanceNotFoundException
      * @throws IntrospectionException
      */
-    public MBeanInfo getMBeanInfo(final String serverId, final ObjectName name) throws InstanceNotFoundException, IntrospectionException, ReflectionException {
+    public MBeanInfo getMBeanInfo(final String serverId, final ObjectName name)
+            throws InstanceNotFoundException, IntrospectionException, ReflectionException {
         return getMBeanServer(serverId).getMBeanInfo(name);
     }
 
-    public Object getMBeanAttribute(final String serverId, final ObjectName name, final String attribute) throws InstanceNotFoundException, MBeanException, AttributeNotFoundException, ReflectionException {
+    public Object getMBeanAttribute(final String serverId, final ObjectName name, final String attribute)
+            throws InstanceNotFoundException, MBeanException, AttributeNotFoundException, ReflectionException {
         return getMBeanServer(serverId).getAttribute(name, attribute);
 
     }
@@ -167,6 +173,45 @@ public class MBeanServerFactory implements Serializable {
             servers.put(getMBeanServerId(ms),
                     new com.github.angelndevil2.universaljvmagent.server.MBeanServer(ms));
         }
+
+        if (PropertiesUtil.isWebLogic()) {
+            log.debug("may be webLogic ?");
+            //
+            // check mbean server registered
+            //
+            boolean registered = false;
+            for (com.github.angelndevil2.universaljvmagent.server.MBeanServer ms : servers.values()) {
+                for (String domain:ms.getDomains()) {
+                    if (domain.startsWith("com.bea")) {
+                        registered = true;
+                        break;
+                    }
+                }
+                if (registered) break;
+            }
+            //
+            // TODO we boot strapped, so class loader is not access web logic class. weblogic.jndi.WLInitialContextFactory
+            //
+            // javax.naming.NoInitialContextException: Cannot instantiate class: weblogic.jndi.WLInitialContextFactory
+            //
+            if (!registered) {
+                try {
+                    InitialContext context = new InitialContext();
+                    MBeanServer server = (MBeanServer) context.lookup("java:comp/jmx/runtime");
+                    if (server == null) server = (MBeanServer) context.lookup("java:comp/env/jmx/runtime");
+                    if (server != null) {
+
+                        log.debug("mbean server found for webLogic with context lookup");
+                        servers.put(getMBeanServerId(server),
+                                new com.github.angelndevil2.universaljvmagent.server.MBeanServer(server));
+                    }
+
+                } catch (Throwable t) {
+                    log.debug("context lookup failed. sure webLogic ?", t);
+                }
+            }
+        }
+
         if (servers.size() == 0) log.info("no mbean server exist. 'com.sun.management.jmxremote' property will be help.");
     }
 
