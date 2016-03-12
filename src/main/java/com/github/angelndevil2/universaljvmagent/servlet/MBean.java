@@ -1,7 +1,9 @@
 package com.github.angelndevil2.universaljvmagent.servlet;
 
 import com.github.angelndevil2.universaljvmagent.Agent;
-import org.json.simple.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.management.*;
 import javax.ws.rs.GET;
@@ -18,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author k, Created on 16. 2. 28.
  */
 @Path("/mbean/{id}/{object-name}")
+@Slf4j
 public class MBean {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -30,15 +33,16 @@ public class MBean {
             throws MalformedObjectNameException, AttributeNotFoundException,
             MBeanException, ReflectionException, InstanceNotFoundException {
 
-        JSONObject ret = new JSONObject();
+        //JSONObject ret = new JSONObject();
         checkArgument(id != null);
         checkArgument(objectName != null);
         checkArgument(name != null);
 
         Object attribute = Agent.getFactory().getMBeanAttribute(id, new ObjectName(objectName), name);
-        if (attribute != null)
+        Gson gson = new GsonBuilder().serializeNulls().create();
+/*        if (attribute != null)
             ret.put(name,attribute.toString());
-        else ret.put(name, null);
-        return Response.status(200).entity(ret.toJSONString()).build();
+        else ret.put(name, null);*/
+        return Response.status(200).entity(gson.toJson(attribute)).build();
     }
 }
