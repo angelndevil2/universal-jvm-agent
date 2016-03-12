@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @since 0.0.3
  * @author k, Created on 16. 2. 27.
  */
-@Path("/domains")
+@Path("/domains/{id}")
 public class MBeanDomains {
     /**
      * @param id mbean server id
@@ -26,7 +26,6 @@ public class MBeanDomains {
      * @throws InstanceNotFoundException
      */
     @GET
-    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @SuppressWarnings("unchecked")
     public Response getDomains(@PathParam("id") String id) throws InstanceNotFoundException {

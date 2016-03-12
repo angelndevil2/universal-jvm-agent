@@ -56,7 +56,7 @@ public class MBeans {
 
         JSONArray ret = new JSONArray();
 
-        Set<javax.management.ObjectName> list = Agent.getFactory().queryNames(id, domain, null);
+        Set<javax.management.ObjectName> list = Agent.getFactory().queryNames(id, domain+":*", null);
         for (javax.management.ObjectName name : list) ret.add(name.toString());
 
         return Response.status(200).entity(ret.toJSONString()).build();

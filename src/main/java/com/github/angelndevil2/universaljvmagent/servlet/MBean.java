@@ -35,7 +35,10 @@ public class MBean {
         checkArgument(objectName != null);
         checkArgument(name != null);
 
-        ret.put(name, Agent.getFactory().getMBeanAttribute(id, new ObjectName(objectName), name));
+        Object attribute = Agent.getFactory().getMBeanAttribute(id, new ObjectName(objectName), name);
+        if (attribute != null)
+            ret.put(name,attribute.toString());
+        else ret.put(name, null);
         return Response.status(200).entity(ret.toJSONString()).build();
     }
 }

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.naming.*;
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.Hashtable;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -75,7 +74,6 @@ public class JndiContextTraverser implements Serializable{
      * start travers from name
      *
      * @param name jndi name
-     * @throws RemoteException
      */
     public ArrayListMultimap traverse(String name) {
         return traverse(context, name);
@@ -84,7 +82,6 @@ public class JndiContextTraverser implements Serializable{
     /**
      * start travers from root
      *
-     * @throws RemoteException
      */
     public ArrayListMultimap traverse() {
         return traverse(context, "");
