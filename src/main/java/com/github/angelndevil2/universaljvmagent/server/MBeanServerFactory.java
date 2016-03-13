@@ -90,7 +90,7 @@ public class MBeanServerFactory implements Serializable {
      *
      * @param serverId mbean server id
      * @param name object name
-     * @return
+     * @return attribute object
      * @throws InstanceNotFoundException
      * @throws IntrospectionException
      */
@@ -101,6 +101,7 @@ public class MBeanServerFactory implements Serializable {
 
     public Object getMBeanAttribute(final String serverId, final ObjectName name, final String attribute)
             throws InstanceNotFoundException, MBeanException, AttributeNotFoundException, ReflectionException {
+
         return getMBeanServer(serverId).getAttribute(name, attribute);
 
     }
