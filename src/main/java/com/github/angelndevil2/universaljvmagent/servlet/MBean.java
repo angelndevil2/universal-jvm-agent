@@ -5,7 +5,6 @@ import com.github.angelndevil2.universaljvmagent.Agent;
 import com.github.angelndevil2.xii4j.Stats;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.management.*;
 import javax.ws.rs.GET;
@@ -14,7 +13,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
@@ -26,7 +24,6 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author k, Created on 16. 2. 28.
  */
 @Path("/mbean/{id}/{object-name}")
-@Slf4j
 public class MBean {
     /**
      *  create json string from attribute object with {@link Gson#toJson(Object, Type)} which Type parameter is attribute.getClass()

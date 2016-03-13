@@ -1,7 +1,7 @@
 ext {
     majorVersion = '0'
     minorVersion = '0'
-    fixVersion = '3-SNAPSHOT'
+    fixVersion = '3'
 }
 
 group 'com.github.angelndevil2'
@@ -29,9 +29,8 @@ configurations {
      * exclude from runtime, tar, zip
      */
     runtime.exclude('module':'lombok')
+    runtime.exclude('module':'management-api')
 }
-
-def jdkHome = System.getenv("JAVA_HOME")
 
 dependencies {
     /**
@@ -54,6 +53,7 @@ dependencies {
     compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.6'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
     compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.github.angelndevil2:xii4j:0.0.2'
 
 
     compile 'org.slf4j:jcl-over-slf4j:1.7.16'
