@@ -15,6 +15,14 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class StatsJson {
 
+    /**
+     *
+     * @param stats javax.management.j2ee.statistics.Stats
+     * @return json string
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     public static String toJsonString(final Object stats)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
