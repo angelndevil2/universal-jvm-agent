@@ -23,10 +23,23 @@ can be used with HOTSPOT jvm
 
 ## agent.properties
 
-* file :  ___/path/to/universal-jvm-agent/conf/agent.properties___
-* turn off logback log ___logback.use=false___
+* file :  __/path/to/universal-jvm-agent/conf/agent.properties__
+* turn off logback log __logback.use=false__
+
+## jetty.properties
+
+* file : __/path/to/universal-jvm-agent/conf/jetty.properties__
+* default port : 1080
+    * property : http.port 
+
+## logback.xml
+
+* file : __/path/to/universal-jvm-agent/conf/logback.xml__
+* log file : /path/to/universal-jvm-agent/logs/universal-jvm-agent.log
+* rotation : daily
 
 ## Status
 
 * developed with weblogic 12c
+* mbean developed with websphere 8.5.5.8
 * not fully tested
