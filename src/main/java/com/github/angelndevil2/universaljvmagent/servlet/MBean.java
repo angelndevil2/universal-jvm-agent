@@ -45,15 +45,22 @@ public class MBean {
                                  @PathParam("id") String id,
                                  @PathParam("object-name") String objectName,
                                  @PathParam("name") String name)
-            throws MalformedObjectNameException, AttributeNotFoundException,
-            MBeanException, ReflectionException, InstanceNotFoundException {
+            throws
+            MalformedObjectNameException,
+            AttributeNotFoundException,
+            MBeanException,
+            ReflectionException,
+            InstanceNotFoundException {
 
         checkArgument(id != null);
         checkArgument(objectName != null);
         checkArgument(name != null);
 
-        Object attribute = Agent.getFactory().getMBeanAttribute(id, new ObjectName(objectName), name);
-       return getAttribute(attribute);
+         Object attribute = Agent.getFactory().getMBeanAttribute(id, new ObjectName(objectName), name);
+
+         if (attribute == null) return nullReturn();
+
+        return getAttribute(attribute);
     }
 
     /**
@@ -94,6 +101,8 @@ public class MBean {
 
         Object attribute = Agent.getFactory().getMBeanAttribute(id, new ObjectName(objectName), name);
 
+        if (attribute == null) return nullReturn();
+
         if (type.equals(Stats.IMPLEMENTED_FOR)) {
             return Response.status(200).entity(StatsJson.toJsonString(attribute)).build();
         }
@@ -104,5 +113,9 @@ public class MBean {
     private Response getAttribute(Object attribute) {
         Gson gson = new GsonBuilder().serializeNulls().create();
         return Response.status(200).entity(gson.toJson(attribute, attribute.getClass())).build();
+    }
+
+    private Response nullReturn() {
+        return Response.status(200).entity("null").build();
     }
 }

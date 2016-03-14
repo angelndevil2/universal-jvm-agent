@@ -51,6 +51,14 @@ public class MBeanServer implements Serializable {
         return getMBeanServer().getAttribute(oname, name);
     }
 
+    /**
+     * @since 0.0.3
+     * @return default domain string
+     */
+    public String getDefaultDomain() {
+        return getMBeanServer().getDefaultDomain();
+    }
+
     private javax.management.MBeanServer getMBeanServer() throws NullPointerException {
         javax.management.MBeanServer server = this.server.get();
         if (server == null)

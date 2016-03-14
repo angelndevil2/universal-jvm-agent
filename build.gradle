@@ -1,7 +1,7 @@
 ext {
     majorVersion = '0'
     minorVersion = '0'
-    fixVersion = '3'
+    fixVersion = '4-SNAPSHOT'
 }
 
 group 'com.github.angelndevil2'
@@ -18,6 +18,7 @@ mainClassName ='com.github.angelndevil2.universaljvmagent.Launcher'
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 startScripts {
@@ -53,7 +54,7 @@ dependencies {
     compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.6'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
     compile 'com.google.code.gson:gson:2.6.2'
-    compile 'com.github.angelndevil2:xii4j:0.0.2'
+    compile 'com.github.angelndevil2:xii4j:0.1.0'
 
 
     compile 'org.slf4j:jcl-over-slf4j:1.7.16'
@@ -143,4 +144,5 @@ distributions {
         }
     }
 }
+
 //apply from: 'maven-push.gradle'
