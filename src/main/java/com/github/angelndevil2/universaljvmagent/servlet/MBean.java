@@ -45,16 +45,20 @@ public class MBean {
                                  @PathParam("id") String id,
                                  @PathParam("object-name") String objectName,
                                  @PathParam("name") String name)
-            throws MalformedObjectNameException, AttributeNotFoundException,
-            MBeanException, ReflectionException, InstanceNotFoundException {
+            throws
+            MalformedObjectNameException,
+            AttributeNotFoundException,
+            MBeanException,
+            ReflectionException,
+            InstanceNotFoundException {
 
         checkArgument(id != null);
         checkArgument(objectName != null);
         checkArgument(name != null);
 
-        Object attribute = Agent.getFactory().getMBeanAttribute(id, new ObjectName(objectName), name);
+         Object attribute = Agent.getFactory().getMBeanAttribute(id, new ObjectName(objectName), name);
 
-        if (attribute == null) return nullReturn();
+         if (attribute == null) return nullReturn();
 
         return getAttribute(attribute);
     }
